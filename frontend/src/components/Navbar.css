@@ -1,0 +1,140 @@
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+    transition: all 0.4s ease;
+    padding: 1.5rem 0;
+}
+
+.navbar.scrolled {
+    padding: 1rem 0;
+    background: rgba(10, 15, 22, 0.85);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.nav-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.brand-icon {
+    font-size: 1.8rem;
+}
+
+.brand h2 {
+    font-size: 1.5rem;
+    letter-spacing: -0.03em;
+    margin: 0;
+}
+
+.brand h2 span {
+    color: var(--accent);
+}
+
+.nav-links {
+    display: flex;
+    gap: 2.5rem;
+}
+
+.nav-link {
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--text-muted);
+    transition: color 0.3s ease;
+    position: relative;
+}
+
+.nav-link:hover {
+    color: var(--text-main);
+}
+
+.nav-link::after {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    left: 0;
+    width: 0%;
+    height: 2px;
+    background-color: var(--accent);
+    transition: width 0.3s ease;
+}
+
+.nav-link:hover::after {
+    width: 100%;
+}
+
+.nav-actions {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.icon-btn {
+    color: var(--text-main);
+    transition: color 0.3s ease, transform 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.icon-btn:hover {
+    color: var(--accent);
+    transform: translateY(-2px);
+}
+
+.cart-btn {
+    position: relative;
+}
+
+.cart-badge {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background: var(--accent);
+    color: white;
+    font-size: 0.7rem;
+    font-weight: 700;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid var(--primary-bg);
+}
+
+.mobile-menu-btn {
+    display: none;
+}
+
+@media (max-width: 768px) {
+    .nav-links {
+        position: fixed;
+        top: 70px;
+        left: 0;
+        width: 100%;
+        background: var(--primary-bg);
+        flex-direction: column;
+        padding: 2rem;
+        gap: 1.5rem;
+        clip-path: circle(0% at top right);
+        transition: clip-path 0.5s ease-in-out;
+    }
+
+    .nav-links.active {
+        clip-path: circle(150% at top right);
+    }
+
+    .mobile-menu-btn {
+        display: flex;
+    }
+}
