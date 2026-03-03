@@ -6,6 +6,7 @@ import Products from './pages/Products';
 import About from './pages/About';
 import Contact from './pages/Contact';
 import Admin from './pages/Admin';
+import Profile from './pages/Profile';
 import Cart from './components/Cart';
 import Footer from './components/Footer';
 import { CartProvider } from './context/CartContext';
@@ -32,6 +33,7 @@ function App() {
                     <Route path="/about" element={<About />} />
                     <Route path="/contact" element={<Contact />} />
                     <Route path="/admin" element={<Admin />} />
+                    <Route path="/profile" element={<Profile />} />
                     <Route path="/auth" element={<Auth />} />
                   </Routes>
                 </main>

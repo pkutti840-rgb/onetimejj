@@ -3,6 +3,9 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { ArrowRight } from 'lucide-react';
 import './Hero.css';
+import cabbageImg from '../assets/cabbage-01.webp';
+import imagesImg from '../assets/images.jpg';
+import unbrandedImg from '../assets/1-1-un-branded-whole-original-imag6hztrat5mx9d.webp';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -98,20 +101,20 @@ const Hero = () => {
             <div className="parallax-images">
                 {/* Groceries that will float around */}
                 <div className="p-img p-img-1" ref={addToRefs}>
-                    <img src="https://images.unsplash.com/photo-1594282486552-05b4d70fbb92?auto=format&fit=crop&q=80&w=400&h=400" alt="Cabbage" className="blob-img" />
+                    <img src={cabbageImg} alt="Cabbage" className="blob-img" />
                 </div>
                 <div className="p-img p-img-2" ref={addToRefs}>
-                    <img src="https://images.unsplash.com/photo-1610832958506-aa56368176cf?auto=format&fit=crop&q=80&w=400&h=400" alt="Apple" className="blob-img" />
+                    <img src={imagesImg} alt="Fresh Produce" className="blob-img" />
                 </div>
                 <div className="p-img p-img-3" ref={addToRefs}>
-                    <img src="https://images.unsplash.com/photo-1582284540020-8acbe03f4924?auto=format&fit=crop&q=80&w=400&h=400" alt="Orange" className="blob-img" />
+                    <img src={unbrandedImg} alt="Fresh Product" className="blob-img" />
                 </div>
-                <div className="p-img p-img-4" ref={addToRefs}>
+                {/* <div className="p-img p-img-4" ref={addToRefs}>
                     <img src="https://images.unsplash.com/photo-1518977822559-67d4fefd2df5?auto=format&fit=crop&q=80&w=400&h=400" alt="Avocado" className="blob-img" />
                 </div>
                 <div className="p-img p-img-5" ref={addToRefs}>
                     <img src="https://images.unsplash.com/photo-1628773822503-ae307ab4baec?auto=format&fit=crop&q=80&w=400&h=400" alt="Lemon" className="blob-img" />
-                </div>
+                </div> */}
             </div>
         </div>
     );

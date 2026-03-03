@@ -48,6 +48,12 @@ const Cart = () => {
                 return;
             }
 
+            if (cartTotal < 40) {
+                alert("Minimum order amount for checkout is ₹40. Please add more items to your cart.");
+                setIsCheckoutLoading(false);
+                return;
+            }
+
             const params = new URLSearchParams();
             params.append('success_url', window.location.origin + '/?success=true');
             params.append('cancel_url', window.location.origin + '/?canceled=true');
@@ -58,8 +64,8 @@ const Cart = () => {
                 params.append(`line_items[${index}][price_data][product_data][name]`, item.name);
                 params.append(`line_items[${index}][price_data][unit_amount]`, Math.round(item.price * 100).toString());
                 params.append(`line_items[${index}][quantity]`, item.quantity.toString());
-                // Only send image URL if it's an absolute URL
-                if (item.img && item.img.startsWith('http')) {
+                // Only send image URL if it's an absolute URL and not localhost
+                if (item.img && item.img.startsWith('http') && !item.img.includes('localhost') && !item.img.includes('127.0.0.1')) {
                     params.append(`line_items[${index}][price_data][product_data][images][0]`, item.img);
                 }
             });
@@ -79,7 +85,7 @@ const Cart = () => {
                 window.location.href = session.url;
             } else {
                 console.error("Stripe error:", session);
-                alert("Failed to create checkout session. Please try again.");
+                alert("Failed to create checkout session. Error: " + (session.error ? session.error.message : JSON.stringify(session)));
             }
         } catch (error) {
             console.error('Checkout error:', error);

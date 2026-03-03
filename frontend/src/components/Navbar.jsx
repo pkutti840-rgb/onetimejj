@@ -48,6 +48,9 @@ const Navbar = () => {
 
                     {user ? (
                         <div className="user-menu">
+                            <Link to="/profile" className="icon-btn" title="My Profile">
+                                <UserIcon size={22} />
+                            </Link>
                             <button className="icon-btn" title="Logout" onClick={signOut}>
                                 <LogOut size={22} />
                             </button>
