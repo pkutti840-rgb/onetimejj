@@ -1,9 +1,11 @@
 import React, { useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { User, Package, Clock, ShieldCheck, Mail } from 'lucide-react';
+import { User, Package, Clock, ShieldCheck, Mail, Download } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useDeliveries } from '../context/DeliveryContext';
 import { useNavigate } from 'react-router-dom';
+import jsPDF from 'jspdf';
+import 'jspdf-autotable';
 import './Profile.css';
 
 const Profile = () => {
@@ -22,6 +24,65 @@ const Profile = () => {
     // Filter deliveries for the logged-in user
     const userDeliveries = deliveries.filter(d => d.customer === user.email);
     const isAdmin = user.email === 'pkutti840@gmail.com';
+
+    const downloadOrderReceipt = (order) => {
+        const doc = new jsPDF();
+        
+        // Header
+        doc.setFontSize(22);
+        doc.setTextColor(16, 185, 129); // Primary green
+        doc.text("FRESH PICK MARKET", 105, 20, { align: "center" });
+
+        doc.setFontSize(12);
+        doc.setTextColor(100, 100, 100);
+        doc.text("Order Receipt", 105, 28, { align: "center" });
+
+        // Meta Data
+        doc.setFontSize(10);
+        doc.setTextColor(0, 0, 0);
+        doc.text(`Order ID: #${order.id}`, 14, 45);
+        doc.text(`Date: ${order.date || new Date().toISOString().split('T')[0]}`, 14, 52);
+        doc.text(`Customer: ${order.customer}`, 14, 59);
+        doc.text(`Status: ${order.status}`, 14, 66);
+
+        // Parse Items (format: "2x Apple, 1x Banana")
+        const tableColumn = ["Item Details"];
+        const tableRows = [];
+        
+        const itemsList = order.items.split(', ');
+        itemsList.forEach(item => {
+            tableRows.push([item]);
+        });
+
+        // Generate Table
+        doc.autoTable({
+            head: [tableColumn],
+            body: tableRows,
+            startY: 75,
+            theme: 'grid',
+            headStyles: { fillColor: [16, 185, 129] }
+        });
+
+        // Totals
+        const finalY = doc.lastAutoTable.finalY || 75;
+        doc.setFontSize(12);
+        doc.setFont("helvetica", "bold");
+        doc.text(`Total Paid: Rs. ${order.total.toFixed(2)}`, 14, finalY + 15);
+
+        // Thank you note
+        doc.setFont("helvetica", "normal");
+        doc.setFontSize(10);
+        doc.setTextColor(100, 100, 100);
+        doc.text("Thank you for your order! View your profile for updates.", 105, finalY + 30, { align: "center" });
+
+        // Download
+        try {
+            doc.save(`freshpick_receipt_order_${order.id}.pdf`);
+        } catch (error) {
+            console.error("Failed to download PDF:", error);
+            alert("Sorry, we couldn't download the PDF at this time.");
+        }
+    };
 
     return (
         <div className="profile-page">
@@ -101,9 +162,19 @@ const Profile = () => {
                                                 <h4>Items</h4>
                                                 <p>{order.items}</p>
                                             </div>
-                                            <div className="order-total">
-                                                <h4>Total</h4>
-                                                <p className="price">₹{order.total.toFixed(2)}</p>
+                                            <div className="order-footer" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginTop: '16px' }}>
+                                                <div className="order-total">
+                                                    <h4>Total</h4>
+                                                    <p className="price">₹{order.total.toFixed(2)}</p>
+                                                </div>
+                                                <button 
+                                                    className="btn-secondary flex-center" 
+                                                    style={{ padding: '8px 16px', fontSize: '14px' }}
+                                                    onClick={() => downloadOrderReceipt(order)}
+                                                >
+                                                    <Download size={16} style={{ marginRight: '6px' }} />
+                                                    Download Receipt
+                                                </button>
                                             </div>
                                         </div>
                                     </div>
