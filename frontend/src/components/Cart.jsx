@@ -23,7 +23,8 @@ const Cart = () => {
         setIsCheckoutLoading(true);
         try {
             // 1. Save order to Supabase Deliveries Table first
-            const orderItemsString = cartItems.map(item => `${item.quantity}x ${item.name}`).join(', ');
+            // Format: "2x Organic Bananas @ ₹160.00, 1x Fresh Spinach @ ₹50.00"
+            const orderItemsString = cartItems.map(item => `${item.quantity}x ${item.name} @ ₹${item.price.toFixed(2)}`).join(', ');
             const { error: dbError } = await supabase.from('deliveries').insert([{
                 customer: user.email,
                 items: orderItemsString,

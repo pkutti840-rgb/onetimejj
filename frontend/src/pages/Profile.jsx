@@ -5,7 +5,7 @@ import { useAuth } from '../context/AuthContext';
 import { useDeliveries } from '../context/DeliveryContext';
 import { useNavigate } from 'react-router-dom';
 import jsPDF from 'jspdf';
-import 'jspdf-autotable';
+import autoTable from 'jspdf-autotable';
 import './Profile.css';
 
 const Profile = () => {
@@ -45,17 +45,40 @@ const Profile = () => {
         doc.text(`Customer: ${order.customer}`, 14, 59);
         doc.text(`Status: ${order.status}`, 14, 66);
 
-        // Parse Items (format: "2x Apple, 1x Banana")
-        const tableColumn = ["Item Details"];
+        // Parse Items (format: "2x Apple @ ₹50.00, 1x Banana")
+        const tableColumn = ["Item Name", "Quantity", "Price Each", "Subtotal"];
         const tableRows = [];
         
         const itemsList = order.items.split(', ');
-        itemsList.forEach(item => {
-            tableRows.push([item]);
+        itemsList.forEach(itemStr => {
+            // Check if the new price format exists: "2x Apple @ ₹50.00"
+            if (itemStr.includes('@ ₹')) {
+                const [qtyAndName, priceStr] = itemStr.split(' @ ₹');
+                const qtyMatch = qtyAndName.match(/^(\d+)x\s+(.+)$/);
+                
+                if (qtyMatch) {
+                    const qty = parseInt(qtyMatch[1]);
+                    const name = qtyMatch[2];
+                    const price = parseFloat(priceStr);
+                    const subtotal = qty * price;
+                    
+                    tableRows.push([
+                        name,
+                        qty.toString(),
+                        `Rs. ${price.toFixed(2)}`,
+                        `Rs. ${subtotal.toFixed(2)}`
+                    ]);
+                } else {
+                    tableRows.push([itemStr, "-", "-", "-"]);
+                }
+            } else {
+                // Fallback for old orders ("2x Apple")
+                tableRows.push([itemStr, "-", "-", "-"]);
+            }
         });
 
         // Generate Table
-        doc.autoTable({
+        autoTable(doc, {
             head: [tableColumn],
             body: tableRows,
             startY: 75,

@@ -7,7 +7,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowRight, CheckCircle } from 'lucide-react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import jsPDF from 'jspdf';
-import 'jspdf-autotable';
+import autoTable from 'jspdf-autotable';
 import './Home.css';
 
 const Home = () => {
@@ -70,7 +70,7 @@ const Home = () => {
         });
 
         // Generate Table
-        doc.autoTable({
+        autoTable(doc, {
             head: [tableColumn],
             body: tableRows,
             startY: 55,
