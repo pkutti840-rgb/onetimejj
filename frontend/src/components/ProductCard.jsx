@@ -1,12 +1,17 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { ShoppingCart, Star, CheckCircle } from 'lucide-react';
+import { ShoppingCart, Star, CheckCircle, Leaf } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import './ProductCard.css';
 
 const ProductCard = ({ product }) => {
     const [addedTemp, setAddedTemp] = useState(null);
     const { addToCart } = useCart();
+
+    const getFreshnessScore = (id) => {
+        const numericId = typeof id === 'string' ? id.charCodeAt(0) : id;
+        return 85 + (numericId % 14); 
+    };
 
     const handleAdd = (e) => {
         e.preventDefault();
@@ -52,6 +57,26 @@ const ProductCard = ({ product }) => {
                 </div>
                 <h3>{product.name}</h3>
                 <p className="product-desc-sm">{product.description}</p>
+                
+                {/* Freshness Indicator */}
+                <div className="freshness-indicator" style={{ display: 'flex', alignItems: 'center', gap: '6px', marginTop: '12px', marginBottom: '8px' }}>
+                    <Leaf size={14} color="#10b981" />
+                    <div className="freshness-bar-container" style={{ flex: 1, height: '6px', background: '#e2e8f0', borderRadius: '4px', overflow: 'hidden' }}>
+                        <div 
+                            className="freshness-bar-fill" 
+                            style={{ 
+                                width: `${getFreshnessScore(product.id)}%`, 
+                                height: '100%', 
+                                background: '#10b981',
+                                borderRadius: '4px'
+                            }}
+                        />
+                    </div>
+                    <span style={{ fontSize: '11px', color: '#64748b', fontWeight: '600' }}>
+                        {getFreshnessScore(product.id)}% Fresh Output
+                    </span>
+                </div>
+
                 <div className="product-meta">
                     <span className="price">₹{product.price.toFixed(2)}</span>
                     <span className="rating"><Star size={16} fill="currentColor" /> {product.rating}</span>

@@ -18,19 +18,19 @@ const INITIAL_MOCK_PRODUCTS = [
 export const CATEGORIES = ['All', 'Fruits', 'Vegetables', 'Dairy', 'Grains', 'Spices'];
 
 export const ProductProvider = ({ children }) => {
-    const [products, setProducts] = useState(INITIAL_MOCK_PRODUCTS);
-
-    // Load from local storage to persist admin edits
-    useEffect(() => {
+    // Read from localStorage synchronously during initialization to prevent race conditions
+    // where the default mock array overwrites custom items during fast unmount/remounts.
+    const [products, setProducts] = useState(() => {
         const saved = localStorage.getItem('freshcart_products');
         if (saved) {
             try {
-                setProducts(JSON.parse(saved));
+                return JSON.parse(saved);
             } catch (e) {
                 console.error('Failed to parse products');
             }
         }
-    }, []);
+        return INITIAL_MOCK_PRODUCTS;
+    });
 
     const updateProduct = (updatedProduct) => {
         setProducts(prev => {

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Minus, Plus, Trash2, ShoppingBag, LogIn } from 'lucide-react';
+import { X, Minus, Plus, Trash2, ShoppingBag, LogIn, Leaf } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
@@ -13,6 +13,13 @@ const Cart = () => {
     const [isCheckoutLoading, setIsCheckoutLoading] = useState(false);
     const { user } = useAuth();
     const navigate = useNavigate();
+
+    // Generate a consistent pseudo-random freshness score (85-98%) based on product ID
+    const getFreshnessScore = (id) => {
+        // Convert ID to a number if it's a string, or just use it
+        const numericId = typeof id === 'string' ? id.charCodeAt(0) : id;
+        return 85 + (numericId % 14); 
+    };
 
     const handleCheckout = async () => {
         if (!user) {
@@ -146,6 +153,26 @@ const Cart = () => {
                                             />
                                             <div className="cart-item-details">
                                                 <h4>{item.name}</h4>
+                                                
+                                                {/* Freshness Indicator */}
+                                                <div className="freshness-indicator" style={{ display: 'flex', alignItems: 'center', gap: '6px', marginTop: '4px', marginBottom: '8px' }}>
+                                                    <Leaf size={12} color="#10b981" />
+                                                    <div className="freshness-bar-container" style={{ flex: 1, height: '4px', background: '#e2e8f0', borderRadius: '4px', overflow: 'hidden' }}>
+                                                        <div 
+                                                            className="freshness-bar-fill" 
+                                                            style={{ 
+                                                                width: `${getFreshnessScore(item.id)}%`, 
+                                                                height: '100%', 
+                                                                background: '#10b981',
+                                                                borderRadius: '4px'
+                                                            }}
+                                                        />
+                                                    </div>
+                                                    <span style={{ fontSize: '10px', color: '#64748b', fontWeight: '500' }}>
+                                                        {getFreshnessScore(item.id)}% Fresh
+                                                    </span>
+                                                </div>
+
                                                 <span className="cart-item-price">₹{item.price.toFixed(2)}</span>
                                                 <div className="qty-controls">
                                                     <button onClick={() => updateQuantity(item.id, -1)}><Minus size={14} /></button>
